@@ -458,8 +458,8 @@
     if (cam.mode === 'podium') {
       // the podium in the top half (the card sits below), or on the left of a short wide screen (the card on the right)
       const side = cam.shift === 'side';
-      const hh = side ? 3.3 : Math.max(3.9, 4.4 / a);
-      const d = hh / tanH, ly = side ? 1.7 : -0.1, sx = side ? hh * a * 0.5 : 0;
+      const hh = side ? 3.3 : Math.max(4.4, 4.6 / a);
+      const d = hh / tanH, ly = side ? 1.7 : 0.5, sx = side ? hh * a * 0.5 : 0;
       want.p.set(POD.x + sx, ly + 1.2 + d * 0.06, POD.z + d);
       want.l.set(POD.x + sx, ly, POD.z);
     } else if (cam.mode === 'title') {
@@ -472,7 +472,9 @@
       const d = Math.max(12, need / (2 * tanH * a));
       const lead = need * 0.16;
       const up = Math.max(0, (cam.ly || 0.9) - 0.9);
-      want.p.set(cam.tx - 1.5, 3 + d * 0.22 + up * 0.7, cam.zc + d);
+      // a phone held upright looks down more steeply, so the lanes spread out over the tall screen
+      const steep = a < 0.8;
+      want.p.set(cam.tx - 1.5, 3 + d * (steep ? 0.62 : 0.22) + up * 0.7, cam.zc + d * (steep ? 0.78 : 1));
       want.l.set(cam.tx + lead, 0.9 + up * 0.8, cam.zc);
     }
     const k = cam.snap ? 1 : 1 - Math.exp(-4 * dt);

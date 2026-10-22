@@ -13,7 +13,7 @@
   const TREATS = [['🍦', 'ICE CREAM'], ['💧', 'WATER'], ['🧃', 'JUICE BOX'], ['🍪', 'COOKIE'], ['🍉', 'WATERMELON'], ['🍌', 'BANANA']];
   const SIZE = { tommy: 0.78, froggy: 0.8, foxy: 0.86 }; // Tommy is 5: he's drawn smaller (the rules don't care)
   const size = (id) => SIZE[id] || 0.9;
-  const BUDZ = S && SC ? SC.TRACK.z0 + 1.0 : 2.6; // the brother runs on the grass beside your lane
+  const BUDZ = -1.15; // the brother runs on the line just behind your lane (never between you and the camera)
   const MEDAL = { gold: '🥇', silver: '🥈', bronze: '🥉' };
   const PLACE = ['', '1ST', '2ND', '3RD', '4TH'];
   const JAV_SVG = '<svg viewBox="0 0 48 48" aria-hidden="true"><line x1="6" y1="42" x2="38" y2="10" stroke="#14121f" stroke-width="4" stroke-linecap="round"/><polygon points="45,3 33,8 40,15" fill="#9aa3b0" stroke="#14121f" stroke-width="2" stroke-linejoin="round"/><line x1="17" y1="31" x2="23" y2="25" stroke="#ff3d7f" stroke-width="7"/></svg>';
@@ -55,6 +55,7 @@
     document.body.appendChild(d);
     d.addEventListener('animationend', () => d.remove());
   }
+  function clearPops() { document.querySelectorAll('.pop').forEach((d) => d.remove()); }
   function banner(b1, b2, cls) {
     $('banner').innerHTML = `<div class="b1${cls ? ' ' + cls : ''}"></div>` + (b2 ? '<div class="b2"></div>' : '');
     $('banner').querySelector('.b1').textContent = b1;
@@ -314,6 +315,7 @@
     G.lastT = -99;
     G.state = 'intro';
     G.intro = E.tryN === 0 ? 1.8 : 0.6;
+    clearPops();
     setScreen(null);
     for (const a of G.ath) SC.carryJavelin(a.A, e.kind === 'throw');
     if (e.kind !== 'race') SC.resetHurdles();
@@ -438,7 +440,7 @@
     const order = G.ath.map((a, i) => i).sort((p, q) => (places[p] || 9) - (places[q] || 9) || p - q);
     const rows = order.map((i) => {
       const a = G.ath[i], pl = places[i];
-      const tries = e.tries > 1 ? E.vals[i].map((v) => (v == null ? 'X' : v.toFixed(2))).join(' · ') : e.hurdles ? (E.vals[i].length && G.W.lanes[i].hits ? `💥 ${G.W.lanes[i].hits}` : '') : '';
+      const tries = e.tries > 1 ? E.vals[i].map((v) => (v == null ? '✗' : v.toFixed(2))).join(' · ') : e.hurdles ? (E.vals[i].length && G.W.lanes[i].hits ? `💥 ${G.W.lanes[i].hits}` : '') : '';
       return `<tr class="${a.human >= 0 ? 'me' : ''}"><td class="pl">${pl ? MEDAL[S.medal(pl)] || PLACE[pl] : '–'}</td><td><div class="who"><img src="${thumbs[a.id] || ''}" alt="">${a.entry.name}</div></td><td class="val">${fmt(e, best[i])}</td>${e.tries > 1 || e.hurdles ? `<td class="tries">${tries}</td>` : ''}</tr>`;
     });
     $('cardTitle').textContent = e.name;
@@ -505,6 +507,7 @@
   // everybody on the podium (or beside it), the winners do their signature move, confetti
   function stagePodium(places) {
     clearPodium();
+    clearPops();
     SC.podiumView(true, podShift());
     const count = {}, seen = {};
     places.forEach((p) => { const k = p && p <= 3 ? p : 4; count[k] = (count[k] || 0) + 1; });

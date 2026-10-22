@@ -310,6 +310,16 @@
     #pads.two .speed .bar { width: 90px; }
     #pads.two .act span { font-size: 13px; }
   }
+  /* 2 players on a phone held upright: each player's jump button sits above his feet */
+  @media (max-width: 600px) {
+    #pads.two .foot { width: 54px; height: 66px; }
+    #pads.two .a0 { left: var(--edge); width: 118px; height: 54px; bottom: calc(max(14px, env(safe-area-inset-bottom)) + 76px); }
+    #pads.two .a1 { right: max(14px, env(safe-area-inset-right)); width: 118px; height: 54px; bottom: calc(max(14px, env(safe-area-inset-bottom)) + 76px); }
+    #pads.two .speed { bottom: calc(max(14px, env(safe-area-inset-bottom)) + 140px); }
+    #pads.two.noact .speed { bottom: calc(max(14px, env(safe-area-inset-bottom)) + 80px); }
+    #pads.two .speed .bar { width: 76px; }
+    #pads.two .act span { font-size: 15px; }
+  }
   /* short screens (phones on their side): drop the extras so the buttons always fit */
   @media (max-height: 560px) {
     .screen { gap: 6px; padding: 8px 8px 8px 60px; }

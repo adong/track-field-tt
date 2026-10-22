@@ -234,5 +234,5 @@
     return { ok: out.every((c) => c.ok), fail, checks: out };
   }
 
-  TF.checks = { run, play, replay, bot };
+  TF.checks = { run, play, replay, bot, drive };
 })();
